@@ -1,0 +1,26 @@
+Package: mTFTarget
+Title: What the Package Does (one line, title case)
+Version: 0.5
+Authors@R: person("Takahiro", "Suzuki", email = "takahirosuzuki1980@gmail.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.5.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: 
+    BSgenome.Hsapiens.UCSC.hg19,
+    GenomicRanges,
+    ggplot2,
+    MASS,
+    igraph,
+    tidyr,
+    S4Vectors,
+    grDevices,
+    graphics,
+    stats,
+    utils,
+    rlang,
+    IRanges,
+    InfiniumDiffMetMotR
+Remotes: takahirosuzuki1980/InfiniumDiffMetMotR

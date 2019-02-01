@@ -18,7 +18,7 @@
 #' @importFrom graphics legend plot
 #' @importFrom grDevices adjustcolor dev.off pdf
 #' @importFrom GiNA brewer.pal
-#' @importFrom dichromat colorRampPalette
+#' @importFrom grDevices colorRampPalette
 #'
 #' @return a scorMatrix object and export a line plot, heatmaps(k-mean and hierarchical clusterings) as a pdf)
 #'

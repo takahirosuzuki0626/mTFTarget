@@ -14,7 +14,7 @@
 #' @importFrom genomation scaleScoreMatrixList plotMeta multiHeatMatrix 
 #' @importFrom dendextend cutree
 #' @importFrom fastcluster hclust 
-#' @importFrom stat dist kmeans
+#' @importFrom stats dist kmeans
 #' @importFrom graphics legend plot
 #' @importFrom grDevices adjustcolor dev.off pdf
 #' @importFrom GiNA brewer.pal

@@ -12,7 +12,6 @@
 #'
 #' @import GenomicRanges
 #' @importFrom genomation scaleScoreMatrixList plotMeta multiHeatMatrix 
-#' @importFrom dendextend cutree
 #' @importFrom fastcluster hclust 
 #' @importFrom stats dist kmeans
 #' @importFrom graphics legend plot

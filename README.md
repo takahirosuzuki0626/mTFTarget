@@ -22,7 +22,7 @@ install_github("takahirosuzuki1980/mTFTarget")
 ```
 ---
 ---
-Example 1: Single methylation-regulating TF analysis
+**Example 1: Single methylation-regulating TF analysis**
 -------
 ## methylation-regulating TF target identification
 #### 1. Load of InfiniumDiffMetMotR
@@ -50,7 +50,7 @@ cutoff = 2
 MethylDemethyl="Demethyl"
 version = "850"
 sampling = FALSE
-outname = "motif_num_dist"
+outname = "Hep_00_07_demet_GATA6"
 nbiom_cutoff = 0.05
 seq_range = c(-200, 200)
 ```
@@ -131,53 +131,89 @@ dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biologi
 enriched <- enrichr(sig_genes, dbs)
 ```
 ---
-## comparison with expression
-compare with CAGE data by ngsplot
-#### 1. bed export for ngsplot
+## comparison with expression (CAGE data)
+## Option 1: ngsplot
+### 1. bed export
 ```r
+## folder generation
+if(!("ngsplot" %in% list.files())){
+    dir.create("ngsplot")
+}
 ## All targets
-outfile_DMRbed <- paste0(outname, "_DMR.bed")
-write.table(sig_targets_bed, file="DMR.bed", quote=F, sep="\t", row.names=F, col.names=F)
+outfile_DMRbed <- paste0("ngsplot/", outname, "_DMR.bed")
+write.table(sig_targets_bed, file=outfile_DMRbed, quote=F, sep="\t", row.names=F, col.names=F)
+sig_targets_gr <- bed2granges(sig_targets_bed)
 
 ## target promoters TSS
 sig_genecode_genes <- sapply(strsplit(elementMetadata(sig_gene_gr)[["id"]], ";"), function(x){gsub("gene_name=", "", x[6])})
-outfile_TSS <- paste0(outname, "_DMR_target_TSS.bed")
+outfile_TSS <- paste0("ngsplot/", outname, "_DMR_target_TSS.bed")
 granges2bed(gr=sig_gene_gr, file=outfile_TSS, names=sig_genecode_genes, TSS=TRUE)
 
 ## target enhancers
 sig_enhancer_id <- sapply(strsplit(elementMetadata(sig_enhancer_gr)[["id"]], ";"), function(x){gsub("genehancer_id=", "", x[1])})
-outfile_enh <- paste0(outname, "_DMR_target_enhancer.bed")
+outfile_enh <- paste0("ngsplot/", outname, "_DMR_target_enhancer.bed")
 granges2bed(gr=sig_enhancer_gr, file=outfile_enh, names=sig_enhancer_id, TSS=FALSE)
 ```
 #### 2. ngsplot
 In `shell`
+Move to ngsplot directory `cd ngsplot`
+Checking of numer of region
 ```bash
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam DMR.bed "00"'>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam DMR.bed "07"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam DMR.bed "14"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam DMR.bed "21"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam DMR.bed "28"'>>list.txt
-
-ngs.plot.r -G hg19 -R bed -C list.txt -O Hep_00_07_demethyl -T CAGE_tags -L 3000 -FL 300
-
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam DMR_target_TSS.bed "00"'>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam DMR_target_TSS.bed "07"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam DMR_target_TSS.bed "14"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam DMR_target_TSS.bed "21"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam DMR_target_TSS.bed "28"'>>list.txt
-
-ngs.plot.r -G hg19 -R bed -C list.txt -O Hep_00_07_demethyl -T CAGE_tags -L 2000 -FL 300
-
-
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam DMR_enhancer.bed "00"'>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam DMR_enhancer.bed "07"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam DMR_enhancer.bed "14"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam DMR_enhancer.bed "21"'>>list.txt
-echo '/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam DMR_enhancer.bed "28"'>>list.txt
-
-ngs.plot.r -G hg19 -R bed -C list.txt -O Hep_00_07_demethyl -T CAGE_tags -L 2000 -FL 2000
+all_nregion=`wc -l *DMR.bed|cut -f1 -d" "`
+gene_nregion=`wc -l *DMR_target_TSS.bed|cut -f1 -d" "`
+enh_nregion=`wc -l *DMR_target_enhancer.bed|cut -f1 -d" "`
+## heatmap height index
+all_height=`echo "scale=5; $all_nregion / 3000 * 30" | bc`
+gene_height=`echo "scale=5; $gene_nregion / 3000 * 30" | bc`
+enh_height=`echo "scale=5; $enh_nregion / 3000 * 30" | bc`
 ```
-Example 2: multiple methylation-regulating TF analysis
+plot by ngsplot
+```bash
+DMR=`ls *DMR.bed`
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam ${DMR} \"00\"">list_all.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam ${DMR} \"07\"">>list_all.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam ${DMR} \"14\"">>list_all.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam ${DMR} \"21\"">>list_all.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam ${DMR} \"28\"">>list_all.txt
+
+ngs.plot.r -G hg19 -R bed -C list_all.txt -O Hep_00_07_demethyl_all -T CAGE_tags -L 5000 -FL 300 -RR $all_height
+
+DMR_target_TSS=`ls *DMR_target_TSS.bed`
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam ${DMR_target_TSS} \"00\"">list_gene.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam ${DMR_target_TSS} \"07\"">>list_gene.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam ${DMR_target_TSS} \"14\"">>list_gene.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam ${DMR_target_TSS} \"21\"">>list_gene.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam ${DMR_target_TSS} \"28\"">>list_gene.txt
+
+ngs.plot.r -G hg19 -R bed -C list_gene.txt -O Hep_00_07_demethyl_gene -T CAGE_tags -L 5000 -FL 300 -RR $gene_height
+
+DMR_enhancer=`ls *DMR_target_enhancer.bed`
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_00_1.bam ${DMR_enhancer} \"00\"">list_enh.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_07_1.bam ${DMR_enhancer} \"07\"">>list_enh.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_14_1.bam ${DMR_enhancer} \"14\"">>list_enh.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_21_1.bam ${DMR_enhancer} \"21\"">>list_enh.txt
+echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam ${DMR_enhancer} \"28\"">>list_enh.txt
+
+ngs.plot.r -G hg19 -R bed -C list_enh.txt -O Hep_00_07_demethyl_enhancer -T CAGE_tags -L 2000 -FL 5000 -RR $enh_height
+```
+---
+## Option 2: Genomation library
+```r
+bam.files_full <- list.files("/osc-fs_home/t-suzuki/CAGE_Hep_SKM_diff/bam/HEP", full.names=TRUE, pattern="1.bam$")
+bam.files <- sapply(strsplit(bam.files_full, "/"), function(x){x[7]})
+sample_names <- sapply(strsplit(bam.files, "_1.b"), function(x){x[1]})
+
+## all targets
+sig_targets_scoreMatrix <- ngsplotr(bam.files=bam.files_full, peaks=sig_targets_gr, bin.num = 50, sample_names, range=c(-5000,5000), outname="GATA6_Hep00_07_demet_sig_targets")
+
+## promoters
+sig_gene_scoreMatrix <- ngsplotr(bam.files=bam.files_full, peaks=sig_gene_gr, bin.num = 50, sample_names, range=c(-5000,5000), outname="GATA6_Hep00_07_demet_sig_gene")
+
+## enhancers
+sig_enhancer_scoreMatrix <- ngsplotr(bam.files=bam.files_full, peaks=sig_enhancer_gr, bin.num = 50, sample_names, range=c(-5000,5000), outname="GATA6_Hep00_07_demet_sig_enhancer")
+```
+
+**Example 2: multiple methylation-regulating TF analysis**
 -------
 #### 1. Load of InfiniumDiffMetMotR
 ```r
@@ -269,5 +305,5 @@ for (i in seq(length(target_positionsList))){
 ```
 #### drawing network
 ```
-metTFNet.multi(MethylDemethyl="Demethyl",eg_connection_list=eg_connection_list, sig_genes_list=sig_genes_list, outname=outname)
+DMRmultinetwork <- metTFNet.multi(MethylDemethyl="Demethyl",eg_connection_list=eg_connection_list, sig_genes_list=sig_genes_list, outname=outname)
 ```

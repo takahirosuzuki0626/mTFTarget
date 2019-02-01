@@ -11,7 +11,7 @@
 #' @param range a raneg to be analyzed
 #'
 #' @import GenomicRanges
-#' @importFrom genomation ScoreMatrixList plotMeta multiHeatMatrix
+#' @importFrom genomation scaleScoreMatrixList ScoreMatrixList plotMeta multiHeatMatrix
 #' @importFrom dendextend cutree 
 #' @importFrom fastcluster hclust 
 #' @importFrom stats dist kmeans

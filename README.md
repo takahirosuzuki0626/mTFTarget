@@ -127,8 +127,15 @@ panther_tb = getEnrichmentTables(job, ontology = "PANTHER Pathway")
 ## Enrichr analysis
 library(enrichR)
 dbs <- listEnrichrDbs()
+#### all database ####
+enriched_all <- enrichr(as.vector(DMRnetwork[,2]), dbs[[1]])
+#### only GO ####
 dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015")
-enriched <- enrichr(sig_genes, dbs)
+enriched_GO <- enrichr(as.vector(DMRnetwork[,2]), dbs)
+```
+For web Enrichr
+```r
+write.table(as.vector(DMRnetwork[,2]), file=paste0(outname, "_target_enrichr.txt"), sep="\t", quote=FALSE, row.names = FALSE,col.names = FALSE)
 ```
 ---
 ## comparison with expression (CAGE data)

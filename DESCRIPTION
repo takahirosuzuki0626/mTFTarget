@@ -26,5 +26,6 @@ Imports:
     fastcluster,
     genomation,
     dendextend,
-    RColorBrewer
+    RColorBrewer,
+    fitdistrplus
 Remotes: takahirosuzuki1980/InfiniumDiffMetMotR

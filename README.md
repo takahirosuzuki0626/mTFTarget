@@ -25,10 +25,12 @@ install_github("takahirosuzuki1980/mTFTarget")
 **Example 1: Single methylation-regulating TF analysis**
 -------
 ## methylation-regulating TF target identification
+
 #### 1. Load of InfiniumDiffMetMotR
 ```r
 library(mTFTarget)
 ```
+
 #### 2. Making Motif database
 ```r
 library(InfiniumDiffMetMotR)
@@ -39,6 +41,7 @@ motifDBList <- IMAGE_PWMlist
 motif_names <- target_TF
 motifDBList <- motifDBList[grep(motif_names,names(motifDBList))]
 ```
+
 #### 3. Set parametors
 ```r
 ## Parametors
@@ -54,7 +57,14 @@ outname = "Hep_00_07_demet_GATA6"
 nbiom_cutoff = 0.05
 seq_range = c(-200, 200)
 ```
-#### 4. Identification of DMR
+
+#### 4. Otimization of range
+```r
+ranges <- seq(100, 2000, length=20)    # ranges to be teste
+nsig_target_by_range <-OptRange(ranges=ranges, nbiom_cutoff = nbiom_cutoff)
+```
+
+#### 5. Identification of DMR
 ```r
 motif_positionsList <- MotPosiList(infile=infile,
                                    motifDBList=motifDBList,
@@ -65,13 +75,15 @@ motif_positionsList <- MotPosiList(infile=infile,
                                    seq_range = seq_range,
                                    outname = outname)
 ```
-#### 5. Exact test for nagative binomial model
+
+#### 6. Exact test for nagative binomial model
 ```r
 target_positionsList <- motif_positionsList[[1]]
 random_positionsList <- motif_positionsList[[2]]
 nbinom_pval <- DMRNbinomTest(target_positionsList,random_positionsList, outname)
 ```
-#### 6. Extraction of significant target regions
+
+#### 7. Extraction of significant target regions
 ```r
 sig_targets <- nbinom_pval[nbinom_pval <= nbiom_cutoff,]
 if(version=="450"){
@@ -82,12 +94,14 @@ if(version=="450"){
 sig_targets_bed <- position2bed3(sig_targets_posi, c(0,1))
 sig_targets_gr <- bed2granges(sig_targets_bed)
 ```
-#### 7. DMR associated promoter and enhancer identification
+
+#### 8. DMR associated promoter and enhancer identification
 ```r
 sig_gene_gr <- DMRPromoter(sig_targets_gr = sig_targets_gr)    # promoter
 sig_enhancer_gr <- DMREnhancer(sig_targets_gr = sig_targets_gr)    # enhancer
 ```
-#### 8. Drawing of methyl-TF target Network
+
+#### 9. Drawing of methyl-TF target Network
 ```r
 ## enhancer targed gene matrix
 enhancer_gene_connection <- NULL
@@ -101,6 +115,8 @@ sig_genes <- sapply(strsplit(elementMetadata(sig_gene_gr)[["id"]], ";"), functio
 ## drawing network
 DMRnetwork <- metTFNet (TF=target_TF, MethylDemethyl=MethylDemethyl, enhancer_gene_connection=enhancer_gene_connection, sig_genes=sig_genes, outname=outname)
 ```
+
+
 ---
 ## Functional analysis
 #### 1. GREAT analysis
@@ -122,6 +138,7 @@ job <- submitGreatJob(sig_targets_gr, bg = bg_bed_gr)
 go_tb = getEnrichmentTables(job)
 panther_tb = getEnrichmentTables(job, ontology = "PANTHER Pathway")
 ```
+
 #### 2.  GO analysis by Enrichr for promoter overlapped genes
 ```r
 ## Enrichr analysis
@@ -137,6 +154,8 @@ For web Enrichr
 ```r
 write.table(as.vector(DMRnetwork[,2]), file=paste0(outname, "_target_enrichr.txt"), sep="\t", quote=FALSE, row.names = FALSE,col.names = FALSE)
 ```
+
+
 ---
 ## comparison with expression (CAGE data)
 ## Option 1: ngsplot
@@ -161,6 +180,7 @@ sig_enhancer_id <- sapply(strsplit(elementMetadata(sig_enhancer_gr)[["id"]], ";"
 outfile_enh <- paste0("ngsplot/", outname, "_DMR_target_enhancer.bed")
 granges2bed(gr=sig_enhancer_gr, file=outfile_enh, names=sig_enhancer_id, TSS=FALSE)
 ```
+
 #### 2. ngsplot
 In `shell`
 Move to ngsplot directory `cd ngsplot`
@@ -203,6 +223,8 @@ echo "/home/t-suzuki/osc-fs/CAGE_Hep_SKM_diff/bam/HEP/Hep_28_1.bam ${DMR_enhance
 
 ngs.plot.r -G hg19 -R bed -C list_enh.txt -O Hep_00_07_demethyl_enhancer -T CAGE_tags -L 2000 -FL 5000 -RR $enh_height
 ```
+
+
 ---
 ## Option 2: Genomation library
 ```r
@@ -226,6 +248,7 @@ sig_enhancer_scoreMatrix <- ngsplotr(bam.files=bam.files_full, peaks=sig_enhance
 ```r
 library(mTFTarget)
 ```
+
 #### 2. Making Motif database
 ```r
 library(InfiniumDiffMetMotR)
@@ -236,6 +259,7 @@ motifDBList <- IMAGE_PWMlist
 motif_names <- c("GATA6","GATA4")
 motifDBList <- motifDBList[sapply(strsplit(names(motifDBList), "_"), function(x){x[1] %in% motif_names})]
 ```
+
 #### 3. Set parametors
 ```r
 ## Parametors
@@ -251,6 +275,7 @@ outname = "multi_test"
 nbiom_cutoff = 0.05
 seq_range = c(-200, 200)
 ```
+
 #### 4. Identification of DMR
 ```r
 motif_positionsList <- MotPosiList(infile=infile,
@@ -262,6 +287,7 @@ motif_positionsList <- MotPosiList(infile=infile,
                                    seq_range = seq_range,
                                    outname = outname)
 ```
+
 #### 5. Exact test for nagative binomial model
 ```r
 target_positionsList <- motif_positionsList[[1]]
@@ -310,6 +336,7 @@ for (i in seq(length(target_positionsList))){
     names(sig_genes_list)[i] <- mot_name
 }
 ```
+
 #### drawing network
 ```
 DMRmultinetwork <- metTFNet.multi(MethylDemethyl="Demethyl",eg_connection_list=eg_connection_list, sig_genes_list=sig_genes_list, outname=outname)

@@ -7,7 +7,7 @@
 #'
 #' @import ggplot2
 #' @importFrom tidyr gather
-#' @importFrom MASS fitdistr
+#' @importFrom fitdistrplus fitdist
 #' @importFrom stats dnbinom pnbinom
 #' @importFrom rlang enquos quo_is_missing
 #'
@@ -28,8 +28,8 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     target_motif_num_each <- data.frame(target=sapply(target_positionsList[[1]], length))
     random_motif_num_each <- data.frame(random=sapply(random_positionsList[[1]], length))
 
-    #library(MASS)
-    fit <- fitdistr(unlist(random_motif_num_each), lower=c(0,0), densfun="negative binomial")
+    #library(fitdistrplus)
+    fit <- fitdist(unlist(random_motif_num_each), lower=c(0,0), distr="nbinom")
     random_simulation <- data.frame(num = 0:10, nb = dnbinom(0:10, size=fit$estimate["size"], mu=fit$estimate["mu"])*length(random_motif_num_each[[1]]))
 
     ## Plot of motif count distribution and negative binomial distribution model

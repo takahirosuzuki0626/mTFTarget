@@ -22,5 +22,9 @@ Imports:
     utils,
     rlang,
     IRanges,
-    InfiniumDiffMetMotR
+    InfiniumDiffMetMotR,
+    fastcluster,
+    genomation,
+    dendextend,
+    RColorBrewer
 Remotes: takahirosuzuki1980/InfiniumDiffMetMotR

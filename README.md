@@ -61,7 +61,15 @@ seq_range = c(-200, 200)
 #### 4. Otimization of range
 ```r
 ranges <- seq(100, 2000, length=20)    # ranges to be teste
-nsig_target_by_range <-OptRange(ranges=ranges, nbiom_cutoff = nbiom_cutoff)
+nsig_target_by_range <-OptRange(infile=infile,
+motifDBList=motifDBList,
+TreatmentColnum = TreatmentColnum,
+ControlColnum = ControlColnum,
+MethylDemethyl=MethylDemethyl,
+version = version,
+ranges=ranges,
+nbiom_cutoff = nbiom_cutoff,
+outname = outname)
 ```
 
 #### 5. Identification of DMR

@@ -26,29 +26,30 @@
 #' @keywords binominal fitting optimization
 #' @export
 
-OptRange <- function (infile=infile,
-                      motifDBList=motifDBList,
-                      ControlColnum = ControlColnum,
-                      TreatmentColnum = TreatmentColnum,
-                      MethylDemethyl=MethylDemethyl,
-                      version = version,
-                      outname = outname,
-                      nbiom_cutoff = nbiom_cutoff,
+OptRange <- function (infile,
+                      motifDBList,
+                      ControlColnum,
+                      TreatmentColnum,
+                      MethylDemethyl,
+                      version,
+                      outname,
+                      nbiom_cutoff,
                       ranges){
     totalvstaraget <- NULL
     for(i in ranges){
+        cat(paste0("---------- Range:",i," ----------\n"))
         fiterror <- TRUE
         fitreps <- 0
-        while(fiterror == TRUE){    # repeat if the fitting is error
+        while (fiterror == TRUE){    # repeat if the fitting is error
             ## if while loop repeated more than 100 time. break the loop
-            if (fitreps > 100){
+            if(fitreps > 100){
                 cat("fitting failed!\n")
                 totalvstaraget <- rbind(totalvstaraget, rep("NA", 6))
                 next
             }
 
             ## parametors setting
-            outname = paste0("RUNX1OE_demet_", i)
+            outname = paste0(outname, i)
             seq_range = c(-i, i)
 
             ## count the motifs in the indicated range
@@ -70,7 +71,6 @@ OptRange <- function (infile=infile,
             ## fitting 
             #library(fitdistrplus)
             fit <- try(fitdist(unlist(random_motif_num_each), lower=c(0,0), distr="nbinom"))
-            cat("OK\n")
             if(class(fit) == "try-error"){    # fitting error check
                 cat ("fitting error! repeat the fitting\n")
                 fiterror <- TRUE
@@ -85,6 +85,7 @@ OptRange <- function (infile=infile,
                 nsig_targets <- length(sig_targets)    # number of significant targets
             
                 totalvstaraget <- rbind(totalvstaraget, c(i, size=size, mu=mu, zero_p, length(motif_positionsList[[1]][[1]]), nsig_targets))
+                cat("nbinominal exact test Done...\n")
             }
         }
     }

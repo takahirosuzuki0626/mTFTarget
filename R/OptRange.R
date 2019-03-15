@@ -49,7 +49,7 @@ OptRange <- function (infile,
             }
 
             ## parametors setting
-            outname = paste0(outname, i)
+            outname2 = paste0(outname, i)
             seq_range = c(-i, i)
 
             ## count the motifs in the indicated range
@@ -60,7 +60,7 @@ OptRange <- function (infile,
                                             MethylDemethyl=MethylDemethyl,
                                             version = version,
                                             seq_range = seq_range,
-                                            outname = outname)
+                                            outname = outname2)
 
             target_positionsList <- motif_positionsList[[1]]
             random_positionsList <- motif_positionsList[[2]]
@@ -80,7 +80,7 @@ OptRange <- function (infile,
                 size=fit$estimate["size"]    # siz  e of fitted distribution
                 mu=fit$estimate["mu"]    # mu of fitted distribution
                 zero_p <- pnbinom(0, size=size, mu=mu, lower.tail = FALSE, log.p = FALSE)    #p-value of zero
-                nbinom_pval <- DMRNbinomTest(target_positionsList,random_positionsList, outname)    # computation of p-value
+                nbinom_pval <- DMRNbinomTest(target_positionsList,random_positionsList, outname2)    # computation of p-value
                 sig_targets <- nbinom_pval[nbinom_pval <= nbiom_cutoff,]    # significant targets
                 nsig_targets <- length(sig_targets)    # number of significant targets
             

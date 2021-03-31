@@ -109,5 +109,5 @@ metTFNet <- function(TF="TF", MethylDemethyl="Demethyl", enhancer_gene_connectio
            text.col="black",
            horiz = F)
     dev.off()
-    return(df)
+    return(list(df, g))
 }

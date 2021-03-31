@@ -1,7 +1,7 @@
 Package: mTFTarget
 Title: What the Package Does (one line, title case)
 Version: 0.5
-Authors@R: person("Takahiro", "Suzuki", email = "takahirosuzuki1980@gmail.com", role = c("aut", "cre"))
+Authors@R: person("Takahiro", "Suzuki", email = "takahirosuzuki0626@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
@@ -28,4 +28,4 @@ Imports:
     dendextend,
     RColorBrewer,
     fitdistrplus
-Remotes: takahirosuzuki1980/InfiniumDiffMetMotR
+Remotes: takahirosuzuki0626/InfiniumDiffMetMotR

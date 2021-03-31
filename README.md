@@ -4,13 +4,13 @@ Version: 0.5
 
 Description: This is a R package to analyze methylation-regulating TF target.
 
-Last Update: 2019-01-22  
+Last Update: 2021-03-31  
 
 Depends: R (>= 3.5.0), Biobase (>= 2.5.5)  
 
 Author: Takahiro Suzuki  
 
-Updated by: takahirosuzuki1980@gmail.com
+Updated by: takahirosuzuki0626@gmail.com
 
 Install
 -------

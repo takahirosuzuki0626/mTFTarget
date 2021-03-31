@@ -46,20 +46,22 @@ MotPosiList <- function(infile="sel_processed_Mval.txt",
     DMP_IDs <- DmpId(selDataMatrix=selDataMatrix, ControlColnum = ControlColnum, TreatmentColnum = TreatmentColnum, p.cutoff=p.cutoff, cutoff= cutoff, MethylDemethyl=MethylDemethyl)
 
     if(!sampling == FALSE & length(DMP_IDs) >= sampling){ ##fast option: sampling of 300 DMPs
-        DMP_IDs <- DMP_IDs[floor(runif(sampling,1,length(DMP_IDs)))]
+        ##fast option
+        cat(paste0("Analysis will be run with ", sampling, "randomly selected DMPs."))
+        cat("\n")
+        DMP_IDs <- DMP_IDs[floor(runif(sampling, 1, length(DMP_IDs)))]
     }
 
-    if(version=="450"){
-        target_position <- na.omit(probeID2position(probe_IDs=DMP_IDs,anno_info=Methyl450anno))	#conversion of DMP IDs to position
-        randomProbe_IDs  <- stratSampling(target_IDs=DMP_IDs, Methyl450anno=Methyl450anno)	#stratified sampling for negative control
-        random_position<- na.omit(probeID2position(probe_IDs=randomProbe_IDs, anno_info=Methyl450anno))	#conversion of NC probe IDs to position
-        positionsList <- list("target" = target_position, "random" = random_position)    #integrate DMP positoins and NC positions
-    }else if ((version=="EPIC")||(version=="850")){
-        target_position <- na.omit(probeID2position(probe_IDs=DMP_IDs, anno_info=EPICanno))	#conversion of DMP IDs to position
-        randomProbe_IDs  <- stratSampling_EPIC(target_IDs=DMP_IDs, EPICanno=EPICanno)	#stratified sampling for negative control
-        random_position<- na.omit(probeID2position(probe_IDs=randomProbe_IDs, anno_info=EPICanno))	#conversion of NC probe IDs to position
-        positionsList <- list("target" = target_position, "random" = random_position)	#integrate DMP positoins and NC positions
+    if(version == "450"){
+        probe_annotation <- InfiniumDiffMetMotR::Methyl450anno
+    } else if((version == "EPIC") || (version == "850")){
+        probe_annotation <- InfiniumDiffMetMotR::EPICanno
     }
+    
+    target_position <- na.omit(probeID2position(probe_IDs = DMP_IDs, anno_info = probe_annotation)) #conversion of DMP IDs to position
+    randomProbe_IDs <- stratSampling(target_IDs = DMP_IDs, anno_info = probe_annotation) #stratified sampling for negative control
+    random_position <- na.omit(probeID2position(probe_IDs = randomProbe_IDs, anno_info = probe_annotation)) #conversion of NC probe IDs to position
+    positionsList <- list("target" = target_position, "random" = random_position) #integrate DMP positoins and NC positions
 
     ## sequence extraction
     ## Read human hg19 genomic sequence

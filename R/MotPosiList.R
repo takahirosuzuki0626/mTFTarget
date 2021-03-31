@@ -40,8 +40,6 @@ MotPosiList <- function(infile="sel_processed_Mval.txt",
 ){
     #library("InfiniumDiffMetMotR")
     selDataMatrix <- read.table(infile)    #Reading of M-value matrix
-    Methyl450anno <- Methyl450anno 
-    EPICanno <- EPICanno
 
     DMP_IDs <- DmpId(selDataMatrix=selDataMatrix, ControlColnum = ControlColnum, TreatmentColnum = TreatmentColnum, p.cutoff=p.cutoff, cutoff= cutoff, MethylDemethyl=MethylDemethyl)
 

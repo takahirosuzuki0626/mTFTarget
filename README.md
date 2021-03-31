@@ -18,7 +18,7 @@ Install ofmTFTarget from github
 ```r
 install.packages("devtools")
 require(devtools)
-install_github("takahirosuzuki1980/mTFTarget")
+install_github("takahirosuzuki0626/mTFTarget")
 ```
 ---
 ---

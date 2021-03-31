@@ -13,6 +13,7 @@
 #' @param seq_range range from CpG to be analyzed
 #' @param outname output file name
 #' @param nbiom_cutoff cutoff of negative binomial model test
+#' @param min.score he minimum score for counting a match. Can be given as a character string containing a percentage (e.g. "85%") of the highest possible score or as a single number. 
 #'
 #' @import ggplot2
 #' @import InfiniumDiffMetMotR
@@ -36,7 +37,8 @@ MotPosiList <- function(infile="sel_processed_Mval.txt",
                         sampling = FALSE,
                         seq_range = c(-200, 200),
                         outname = "motif_num_dist",
-                        nbiom_cutoff = 0.05
+                        nbiom_cutoff = 0.05,
+                        min.score = "90%"
 ){
     #library("InfiniumDiffMetMotR")
     selDataMatrix <- read.table(infile)    #Reading of M-value matrix
@@ -63,7 +65,7 @@ MotPosiList <- function(infile="sel_processed_Mval.txt",
 
     ## sequence extraction
     ## Read human hg19 genomic sequence
-    #library("BSgenome.Hsapiens.UCSC.hg19")
+    library("BSgenome.Hsapiens.UCSC.hg19")
     tmp <- ls(paste("package", "BSgenome.Hsapiens.UCSC.hg19", sep=":"))
     genome <- eval(parse(text=tmp))
     cat("Retreave the sequences...\n")
@@ -86,10 +88,10 @@ MotPosiList <- function(infile="sel_processed_Mval.txt",
     cat(paste("motif serch: Total ", length(motifDBList), " motifs", sep=""))
     cat("\n\tTarget regions...\n")
     ## ((multi-fasta file(multi-seqs) x motif) x [motif number])) x [multi-fasta file number]
-    target_positionsList <- splitSeqMotDist(filenames=target_all_filenames,  motif_list=motifDBList)
+    target_positionsList <- splitSeqMotDist(filenames=target_all_filenames,  motif_list=motifDBList, min.score = min.score)
     file.remove(target_all_filenames)
     cat("\tbackground regions...\n")
-    random_positionsList <- splitSeqMotDist(filenames=random_all_filenames,  motif_list=motifDBList)
+    random_positionsList <- splitSeqMotDist(filenames=random_all_filenames,  motif_list=motifDBList, min.score = min.score)
     file.remove(random_all_filenames)
     gc()
     file.remove(tempDir)

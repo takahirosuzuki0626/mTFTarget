@@ -44,11 +44,9 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
                 panel.grid.major = element_blank(),
                 panel.grid.minor = element_blank(),
                 strip.background = element_blank(),
-                plot.title = element_text(size = 20,hjust = 0.5),
                 text = element_text(size=20),
                 axis.ticks = element_line(size=0.5),
                 axis.line = element_line(size=0.5),
-                plot.margin = unit(c(1,1,1,1),"line"),
                 legend.title = element_blank())
 
     g <- ggplot(df)
@@ -56,7 +54,6 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     g <- g + scale_fill_manual(values = c("black", "blue"))
     g <- g + scale_color_manual(values = c("gray40", "blue4"))
     g <- g + geom_line(data=random_simulation, aes(x=num, y=nb), color="black", alpha=0.8)
-    g <- g + ggtitle("Disributioin of motif number and Negative Binomial distribution Fitting")
     g <- g + labs(x = "Number of motif", y = "frequency")
     g <- g + theme
     g <- g + theme(
@@ -70,9 +67,9 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     }else{
          ks_pval_lab <- paste0("p-value = ", ks_pval)
     }
-    g <- g + annotate("text",x=Inf,y=Inf,label=ks_pval_lab,size = 6, hjust=1.7,vjust=5)
-    outfile_nbinom <- paste0(outname, "_nbinom_model.pdf")
-    ggsave(filename=outfile_nbinom, plot=g)
+    g <- g + annotate("text",x=Inf,y=Inf,label=ks_pval_lab,size = 6, hjust=1.7,vjust=4)
+    
+    ggsave(plot=g, filename= paste0(outname, "_nbinom_model.pdf"), width=10.5, height=7)
 
     ## Computation of p-value based on exact test of negative binomial distribution model
     nbinom_pval <- sapply(target_motif_num_each, function(x){pnbinom(x, size=fit$estimate["size"], mu=fit$estimate["mu"], lower.tail = FALSE, log.p = FALSE)})

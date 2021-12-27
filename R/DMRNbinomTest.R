@@ -44,11 +44,8 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
                 panel.grid.major = element_blank(),
                 panel.grid.minor = element_blank(),
                 strip.background = element_blank(),
-                plot.title = element_text(size = 11,hjust = 0.5),
-                axis.text.x = element_text(size=12),
-                axis.text.y = element_text(size=12),
-                axis.title.x = element_text(size=12),
-                axis.title.y = element_text(size=12),
+                plot.title = element_text(size = 20,hjust = 0.5),
+                text = element_text(size=20),
                 axis.ticks = element_line(size=0.5),
                 axis.line = element_line(size=0.5),
                 plot.margin = unit(c(1,1,1,1),"line"),
@@ -60,10 +57,20 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     g <- g + scale_color_manual(values = c("gray40", "blue4"))
     g <- g + geom_line(data=random_simulation, aes(x=num, y=nb), color="black", alpha=0.8)
     g <- g + ggtitle("Disributioin of motif number and Negative Binomial distribution Fitting")
-    g <- g + xlab("Number of motif")
+    g <- g + labs(x = "Number of motif", y = "frequency")
     g <- g + theme
-    g <- g + theme(legend.position = c(0.8, 0.8))
-
+    g <- g + theme(
+        legend.position = c(0.8, 0.8),
+        text = element_text(size=20)
+        )
+    
+    ks_pval <- ks.test(x=deframe(target_motif_num_each),y=deframe(random_motif_num_each))$p.value
+    if(ks_pval == 0){
+        ks_pval_lab <- "p-value < 2.2e-16"
+    }else{
+         ks_pval_lab <- paste0("p-value = ", ks_pval)
+    }
+    g <- g + annotate("text",x=Inf,y=Inf,label=ks_pval_lab,size = 6, hjust=1.7,vjust=5)
     outfile_nbinom <- paste0(outname, "_nbinom_model.pdf")
     ggsave(filename=outfile_nbinom, plot=g)
 

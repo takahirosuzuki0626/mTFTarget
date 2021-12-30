@@ -74,5 +74,5 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     ## Computation of p-value based on exact test of negative binomial distribution model
     nbinom_pval <- sapply(target_motif_num_each, function(x){pnbinom(x, size=fit$estimate["size"], mu=fit$estimate["mu"], lower.tail = FALSE, log.p = FALSE)})
     rownames(nbinom_pval) <- rownames(target_motif_num_each)
-    return(list(p-value = nbinom_pval, ggplot = g))
+    return(list(nbinom_pval, g))
 }

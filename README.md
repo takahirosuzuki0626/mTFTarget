@@ -88,12 +88,12 @@ motif_positionsList <- MotPosiList(infile=infile,
 ```r
 target_positionsList <- motif_positionsList[[1]]
 random_positionsList <- motif_positionsList[[2]]
-nbinom_pval <- DMRNbinomTest(target_positionsList,random_positionsList, outname)
+nbinom_test_res <- DMRNbinomTest(target_positionsList,random_positionsList, outname)
 ```
 
 #### 7. Extraction of significant target regions
 ```r
-sig_targets <- nbinom_pval[nbinom_pval <= nbiom_cutoff,]
+sig_targets <- nbinom_test_res[[1]][nbinom_test_res[[1]] <= nbiom_cutoff,]
 if(version=="450"){
     sig_targets_posi <- na.omit(probeID2position(probe_IDs=names(sig_targets),anno_info=Methyl450anno))	#conversion of DMP IDs to position
 }else if ((version=="EPIC")||(version=="850")){
@@ -309,12 +309,12 @@ for (i in seq(length(target_positionsList))){
     target_positionsList. <- target_positionsList[i]
     random_positionsList. <- random_positionsList[i]
 
-    nbinom_pval <- DMRNbinomTest(target_positionsList=target_positionsList.,
+    nbinom_test_res <- DMRNbinomTest(target_positionsList=target_positionsList.,
                                  random_positionsList=random_positionsList.,
                                 outname=mot_name)
 
     #### 6. Extraction of significant target regions
-    sig_targets <- nbinom_pval[nbinom_pval <= nbiom_cutoff,]
+    sig_targets <- nbinom_test_res[[1]][nbinom_test_res[[1]] <= nbiom_cutoff,]
 
     if(version=="450"){
         sig_targets_posi <- na.omit(probeID2position(probe_IDs=names(sig_targets),anno_info=Methyl450anno))	#conversion of DMP IDs to position

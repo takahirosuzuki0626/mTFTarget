@@ -67,7 +67,7 @@ DMRNbinomTest <- function (target_positionsList,random_positionsList, outname){
     }else{
          ks_pval_lab <- paste0("p-value = ", ks_pval)
     }
-    g <- g + annotate("text",x=Inf,y=Inf,label=ks_pval_lab,size = 6, hjust=1.7,vjust=4)
+    g <- g + labs(caption = ks_pval_lab)
     
     ggsave(plot=g, filename= paste0(outname, "_nbinom_model.pdf"), width=10.5, height=7)
 
